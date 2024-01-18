@@ -18,7 +18,7 @@ func AuthorizationAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintf(w, peda.Authorization("publickey", "mongoenv", "sistemkeamanan", "user", r))
+	fmt.Fprintf(w, peda.Authorization("publickeykatalogkemanan", "mongoenvkatalogfilm", "sistemkeamanan", "user", r))
 }
 
 func RegistrasiAPI(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +31,7 @@ func RegistrasiAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintf(w, peda.Registrasi("mongoenv", "sistemkeamanan", "user", r))
+	fmt.Fprintf(w, peda.Registrasi("mongoenvkatalogfilm", "sistemkeamanan", "user", r))
 }
 
 func LoginAPI(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +44,7 @@ func LoginAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintf(w, peda.Login("privatekey", "mongoenv", "sistemkeamanan", "user", r))
+	fmt.Fprintf(w, peda.Login("publickeykatalogkemanan", "mongoenvkatalogfilm", "sistemkeamanan", "user", r))
 }
 func TambahFormAPI(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodOptions {
@@ -56,7 +56,7 @@ func TambahFormAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintf(w, peda.TambahForm("publickey", "mongoenv", "sistemkeamanan", "form", r))
+	fmt.Fprintf(w, peda.TambahForm("publickeykatalogkemanan", "mongoenvkatalogfilm", "sistemkeamanan", "form", r))
 }
 func DeleteAllform(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodOptions {
@@ -68,7 +68,7 @@ func DeleteAllform(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintf(w, peda.HapusForm("publickey", "mongoenv", "sistemkeamanan", "form", r))
+	fmt.Fprintf(w, peda.HapusForm("publickeykatalogkemanan", "mongoenvkatalogfilm", "sistemkeamanan", "form", r))
 }
 
 func UpdateAllform(w http.ResponseWriter, r *http.Request) {
@@ -81,7 +81,7 @@ func UpdateAllform(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintf(w, peda.EditForm("publickey", "mongoenv", "sistemkeamanan", "form", r))
+	fmt.Fprintf(w, peda.EditForm("publickeykatalogkemanan", "mongoenvkatalogfilm", "sistemkeamanan", "form", r))
 }
 
 func GetAllform(w http.ResponseWriter, r *http.Request) {
@@ -94,7 +94,7 @@ func GetAllform(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintf(w, peda.AmbilSemuaForm("publickey", "mongoenv", "sistemkeamanan", "form", r))
+	fmt.Fprintf(w, peda.AmbilSemuaForm("publickeykatalogkemanan", "mongoenvkatalogfilm", "sistemkeamanan", "form", r))
 }
 
 func GetOneform(w http.ResponseWriter, r *http.Request) {
@@ -107,7 +107,7 @@ func GetOneform(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintf(w, peda.AmbilSatuForm("publickey", "mongoenv", "sistemkeamanan", "form", r))
+	fmt.Fprintf(w, peda.AmbilSatuForm("publickeykatalogkemanan", "mongoenvkatalogfilm", "sistemkeamanan", "form", r))
 }
 
 func handlerRequests() {

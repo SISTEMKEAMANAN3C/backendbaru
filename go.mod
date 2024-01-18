@@ -1,6 +1,6 @@
 module github.com/SISTEMKEAMANAN3C/backendbaru
 
-go 1.21.3
+go 1.19
 
 require (
 	aidanwoods.dev/go-paseto v1.5.1
