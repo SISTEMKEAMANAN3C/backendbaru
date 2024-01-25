@@ -69,10 +69,7 @@ type FormInput struct {
 type Akademis struct {
 	Nama_Dosen        string `json:"nama_dosen" bson:"nama_dosen"`
 	Pendidikan_Dosen  string `json:"pendidikan_dosen" bson:"pendidikan_dosen"`
-	Kurikulum_Dosen   string `json:"kurikulum_dosen" bson:"kurikulum_dosen"`
-	Penelitian_Dosen  string `json:"penelitian_dosen" bson:"penelitian_dosen"`
 	Gelar_Dosen       string `json:"gelar_dosen" bson:"gelar_dosen"`
-	Lembaga_Dosen     string `json:"lembaga_dosen" bson:"lembaga_dosen"`
 	Kemampuan_Dosen   string `json:"kemampuan_dosen" bson:"kemampuan_dosen"`
 	Penghargaan_Dosen string `json:"penghargaan_dosen" bson:"penghargaan_dosen"`
 }
@@ -81,12 +78,8 @@ type Sertifikat struct {
 	Judul_Sertifikat              string `json:"judul_sertifikat" bson:"judul_sertifikat"`
 	Pemberi_Sertifikat            string `json:"pemberi_sertifikat" bson:"pemberi_sertifikat"`
 	Penerima_Sertifikat           string `json:"penerima_sertifikat" bson:"penerima_sertifikat"`
-	Tujuan_Sertifikat             string `json:"tujuan_sertifikat" bson:"tujuan_sertifikat"`
 	Tanggal_Penerbitan_Sertifikat string `json:"tanggal_penerbitan_sertifikat" bson:"tanggal_penerbitan_sertifikat"`
-	Cap_Sertifikat                string `json:"cap_sertifikat" bson:"cap_sertifikat"`
 	Nomor_Sertifikat              string `json:"nomor_sertifikat" bson:"nomor_sertifikat"`
-	Info_Sertifikat               string `json:"info_sertifikat" bson:"info_sertifikat"`
-	Logo_Sertifikat               string `json:"logo_sertifikat" bson:"logo_sertifikat"`
 }
 
 type SuratKerja struct {

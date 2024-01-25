@@ -111,7 +111,56 @@ func Login(privatekey, mongoenv, dbname, collname string, r *http.Request) strin
 	return GCFReturnStruct(response)
 }
 
-func TambahForm(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+func TambahFormDosen(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+	var response Pesan
+	response.Status = false
+	mconn := SetConnection(mongoenv, dbname)
+	var dataform FormInput
+	err := json.NewDecoder(r.Body).Decode(&dataform)
+
+	if err != nil {
+		response.Message = "Error parsing application/json: " + err.Error()
+		return GCFReturnStruct(response)
+	}
+
+	header := r.Header.Get("token")
+	if header == "" {
+		response.Message = "Header login tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+	tokenusername := DecodeGetUsername(os.Getenv(publickey), header)
+	tokenrole := DecodeGetRole(os.Getenv(publickey), header)
+	tokennik := DecodeGetNIK(os.Getenv(publickey), header)
+
+	if tokenusername == "" || tokenrole == "" {
+		response.Message = "Hasil decode tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	if !UsernameExists(mongoenv, dbname, User{Username: tokenusername}) {
+		response.Message = "Akun tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	if tokenrole != "dosen" {
+		response.Message = "Anda tidak memiliki akses"
+		return GCFReturnStruct(response)
+	}
+
+	dataform.NIK = tokennik
+	if NIKExists(mongoenv, dbname, dataform) {
+		response.Message = "Data dengan NIK yang digunakan telah dibuat, coba edit data yang ada"
+		return GCFReturnStruct(response)
+	}
+
+	InsertForm(mconn, collname, dataform)
+	response.Status = true
+	response.Message = "Berhasil input data"
+
+	return GCFReturnStruct(response)
+}
+
+func TambahFormAdmin(publickey, mongoenv, dbname, collname string, r *http.Request) string {
 	var response Pesan
 	response.Status = false
 	mconn := SetConnection(mongoenv, dbname)
@@ -141,8 +190,13 @@ func TambahForm(publickey, mongoenv, dbname, collname string, r *http.Request) s
 		return GCFReturnStruct(response)
 	}
 
-	if tokenrole != "admin" && tokenrole != "dosen" {
+	if tokenrole != "admin" {
 		response.Message = "Anda tidak memiliki akses"
+		return GCFReturnStruct(response)
+	}
+
+	if NIKExists(mongoenv, dbname, dataform) {
+		response.Message = "Data dengan NIK yang digunakan telah dibuat, coba edit data yang ada"
 		return GCFReturnStruct(response)
 	}
 
@@ -212,7 +266,7 @@ func AmbilSatuFormDosen(publickey, mongoenv, dbname, collname string, r *http.Re
 		return GCFReturnStruct(response)
 	}
 
-	if tokenrole != "admin" && tokenrole != "dosen" {
+	if tokenrole != "dosen" {
 		response.Message = "Anda tidak memiliki akses"
 		return GCFReturnStruct(response)
 	}
@@ -262,7 +316,50 @@ func AmbilSatuFormAdmin(publickey, mongoenv, dbname, collname string, r *http.Re
 	return GCFReturnStruct(satuform)
 }
 
-func EditForm(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+func EditFormDosen(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+	var response Pesan
+	response.Status = false
+	mconn := SetConnection(mongoenv, dbname)
+	var dataform FormInput
+	err := json.NewDecoder(r.Body).Decode(&dataform)
+
+	if err != nil {
+		response.Message = "Error parsing application/json: " + err.Error()
+		return GCFReturnStruct(response)
+	}
+
+	header := r.Header.Get("token")
+	if header == "" {
+		response.Message = "Header login tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+	tokenusername := DecodeGetUsername(os.Getenv(publickey), header)
+	tokenrole := DecodeGetRole(os.Getenv(publickey), header)
+	tokennik := DecodeGetNIK(os.Getenv(publickey), header)
+
+	if tokenusername == "" || tokenrole == "" {
+		response.Message = "Hasil decode tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	if !UsernameExists(mongoenv, dbname, User{Username: tokenusername}) {
+		response.Message = "Akun tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	if tokenrole != "dosen" {
+		response.Message = "Anda tidak memiliki akses"
+		return GCFReturnStruct(response)
+	}
+	dataform.NIK = tokennik
+	UpdateForm(mconn, collname, dataform)
+	response.Status = true
+	response.Message = "Berhasil update data"
+
+	return GCFReturnStruct(response)
+}
+
+func EditFormAdmin(publickey, mongoenv, dbname, collname string, r *http.Request) string {
 	var response Pesan
 	response.Status = false
 	mconn := SetConnection(mongoenv, dbname)
@@ -292,7 +389,7 @@ func EditForm(publickey, mongoenv, dbname, collname string, r *http.Request) str
 		return GCFReturnStruct(response)
 	}
 
-	if tokenrole != "admin" && tokenrole != "dosen" {
+	if tokenrole != "admin" {
 		response.Message = "Anda tidak memiliki akses"
 		return GCFReturnStruct(response)
 	}
@@ -303,7 +400,52 @@ func EditForm(publickey, mongoenv, dbname, collname string, r *http.Request) str
 	return GCFReturnStruct(response)
 }
 
-func HapusForm(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+func HapusFormDosen(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+	var response Pesan
+	response.Status = false
+	mconn := SetConnection(mongoenv, dbname)
+	var dataform FormInput
+	err := json.NewDecoder(r.Body).Decode(&dataform)
+
+	if err != nil {
+		response.Message = "Error parsing application/json: " + err.Error()
+		return GCFReturnStruct(response)
+	}
+
+	header := r.Header.Get("token")
+	if header == "" {
+		response.Message = "Header login tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	tokenusername := DecodeGetUsername(os.Getenv(publickey), header)
+	tokenrole := DecodeGetRole(os.Getenv(publickey), header)
+	tokennik := DecodeGetRole(os.Getenv(publickey), header)
+
+	if tokenusername == "" || tokenrole == "" {
+		response.Message = "Hasil decode tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	if !UsernameExists(mongoenv, dbname, User{Username: tokenusername}) {
+		response.Message = "Akun tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	if tokenrole != "dosen" {
+		response.Message = "Anda tidak memiliki akses"
+		return GCFReturnStruct(response)
+	}
+
+	dataform.NIK = tokennik
+	DeleteForm(mconn, collname, dataform)
+	response.Status = true
+	response.Message = "Berhasil hapus data"
+
+	return GCFReturnStruct(response)
+}
+
+func HapusFormAdmin(publickey, mongoenv, dbname, collname string, r *http.Request) string {
 	var response Pesan
 	response.Status = false
 	mconn := SetConnection(mongoenv, dbname)
@@ -334,7 +476,7 @@ func HapusForm(publickey, mongoenv, dbname, collname string, r *http.Request) st
 		return GCFReturnStruct(response)
 	}
 
-	if tokenrole != "admin" && tokenrole != "dosen" {
+	if tokenrole != "admin" {
 		response.Message = "Anda tidak memiliki akses"
 		return GCFReturnStruct(response)
 	}
