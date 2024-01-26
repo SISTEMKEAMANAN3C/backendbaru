@@ -164,6 +164,32 @@ func HapusFormAdminAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, peda.HapusFormAdmin("publickey", "mongoenv", "sistemkeamanan", "form", r))
 }
 
+func AmbilSemuaAkunAPI(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization,Token")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	fmt.Fprintf(w, peda.AmbilSemuaAkun("publickey", "mongoenv", "sistemkeamanan", "user", r))
+}
+
+func EditUserAdminAPI(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization,Token")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	fmt.Fprintf(w, peda.EditUserAdmin("publickey", "mongoenv", "sistemkeamanan", "user", r))
+}
+
 func handlerRequests() {
 	http.HandleFunc("/AuthorizationAPI", AuthorizationAPI)
 	http.HandleFunc("/RegistrasiAPI", RegistrasiAPI)
@@ -180,6 +206,9 @@ func handlerRequests() {
 	http.HandleFunc("/AmbilSatuFormAdminAPI", AmbilSatuFormAdminAPI)
 	http.HandleFunc("/EditFormAdminAPI", EditFormAdminAPI)
 	http.HandleFunc("/HapusFormAdminAPI", HapusFormAdminAPI)
+
+	http.HandleFunc("/AmbilSemuaAkunAPI", AmbilSemuaAkunAPI)
+	http.HandleFunc("/EditUserAdminAPI", EditUserAdminAPI)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

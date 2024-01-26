@@ -55,6 +55,11 @@ func IsPasswordValid(mconn *mongo.Database, collname string, datauser User) bool
 	return hashChecker
 }
 
+func UpdateUser(mconn *mongo.Database, collname string, datauser User) interface{} {
+	filter := bson.M{"username": datauser.Username}
+	return atdb.ReplaceOneDoc(mconn, collname, filter, datauser)
+}
+
 // Form --------------------------
 
 func InsertForm(mconn *mongo.Database, collname string, dataform FormInput) interface{} {

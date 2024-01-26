@@ -28,7 +28,7 @@ type User struct {
 	Private     string `json:"private,omitempty" bson:"private,omitempty"`
 	Publick     string `json:"publick,omitempty" bson:"publick,omitempty"`
 	No_whatsapp string `json:"no_whatsapp,omitempty" bson:"no_whatsapp,omitempty"`
-	NIK         string `json:"nik,omitempty" bson:"nik,omitempty"`
+	NIK         string `json:"nik" bson:"nik"`
 }
 
 type UserToken struct {

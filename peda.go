@@ -111,6 +111,87 @@ func Login(privatekey, mongoenv, dbname, collname string, r *http.Request) strin
 	return GCFReturnStruct(response)
 }
 
+func AmbilSemuaAkun(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+	var response Pesan
+	response.Status = false
+	mconn := SetConnection(mongoenv, dbname)
+
+	header := r.Header.Get("token")
+	if header == "" {
+		response.Message = "Header login tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+	tokenusername := DecodeGetUsername(os.Getenv(publickey), header)
+	tokenrole := DecodeGetRole(os.Getenv(publickey), header)
+
+	if tokenusername == "" || tokenrole == "" {
+		response.Message = "Hasil decode tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	if !UsernameExists(mongoenv, dbname, User{Username: tokenusername}) {
+		response.Message = "Akun tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+
+	if tokenrole != "admin" {
+		response.Message = "Anda tidak memiliki akses"
+		return GCFReturnStruct(response)
+	}
+
+	dataform := GetAllUser(mconn, collname)
+	return GCFReturnStruct(dataform)
+}
+
+func EditUserAdmin(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+	var response Pesan
+	response.Status = false
+	mconn := SetConnection(mongoenv, dbname)
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	if err != nil {
+		response.Message = "Error parsing application/json: " + err.Error()
+		return GCFReturnStruct(response)
+	}
+
+	header := r.Header.Get("token")
+	if header == "" {
+		response.Message = "Header login tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+	tokenrole := DecodeGetRole(os.Getenv(publickey), header)
+
+	if !UsernameExists(mongoenv, dbname, user) {
+		response.Message = "Username tidak ada"
+		return GCFReturnStruct(response)
+	}
+
+	hash, hashErr := HashPassword(user.Password)
+	if hashErr != nil {
+		response.Message = "Gagal hash password: " + hashErr.Error()
+		return GCFReturnStruct(response)
+	}
+
+	if tokenrole != "admin" {
+		response.Message = "Anda tidak memiliki akses"
+		return GCFReturnStruct(response)
+	}
+
+	oldakun := FindUser(mconn, collname, user)
+	if user.Password == "" {
+		user.Password = oldakun.Password
+	} else {
+		user.Password = hash
+	}
+
+	UpdateUser(mconn, collname, user)
+	response.Status = true
+	response.Message = "Berhasil edit data"
+
+	return GCFReturnStruct(response)
+}
+
 func TambahFormDosen(publickey, mongoenv, dbname, collname string, r *http.Request) string {
 	var response Pesan
 	response.Status = false
