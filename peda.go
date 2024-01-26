@@ -192,6 +192,42 @@ func EditUserAdmin(publickey, mongoenv, dbname, collname string, r *http.Request
 	return GCFReturnStruct(response)
 }
 
+func HapusUser(publickey, mongoenv, dbname, collname string, r *http.Request) string {
+	var response Pesan
+	response.Status = false
+	mconn := SetConnection(mongoenv, dbname)
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	if err != nil {
+		response.Message = "Error parsing application/json: " + err.Error()
+		return GCFReturnStruct(response)
+	}
+
+	header := r.Header.Get("token")
+	if header == "" {
+		response.Message = "Header login tidak ditemukan"
+		return GCFReturnStruct(response)
+	}
+	tokenrole := DecodeGetRole(os.Getenv(publickey), header)
+
+	if !UsernameExists(mongoenv, dbname, user) {
+		response.Message = "Username tidak ada"
+		return GCFReturnStruct(response)
+	}
+
+	if tokenrole != "admin" {
+		response.Message = "Anda tidak memiliki akses"
+		return GCFReturnStruct(response)
+	}
+
+	DeleteUser(mconn, collname, user)
+	response.Status = true
+	response.Message = "Berhasil hapus data"
+
+	return GCFReturnStruct(response)
+}
+
 func TambahFormDosen(publickey, mongoenv, dbname, collname string, r *http.Request) string {
 	var response Pesan
 	response.Status = false

@@ -60,6 +60,11 @@ func UpdateUser(mconn *mongo.Database, collname string, datauser User) interface
 	return atdb.ReplaceOneDoc(mconn, collname, filter, datauser)
 }
 
+func DeleteUser(mconn *mongo.Database, collname string, datauser User) interface{} {
+	filter := bson.M{"username": datauser.Username}
+	return atdb.DeleteOneDoc(mconn, collname, filter)
+}
+
 // Form --------------------------
 
 func InsertForm(mconn *mongo.Database, collname string, dataform FormInput) interface{} {

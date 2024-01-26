@@ -190,6 +190,19 @@ func EditUserAdminAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, peda.EditUserAdmin("publickey", "mongoenv", "sistemkeamanan", "user", r))
 }
 
+func HapusUserAPI(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization,Token")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	fmt.Fprintf(w, peda.HapusUser("publickey", "mongoenv", "sistemkeamanan", "user", r))
+}
+
 func handlerRequests() {
 	http.HandleFunc("/AuthorizationAPI", AuthorizationAPI)
 	http.HandleFunc("/RegistrasiAPI", RegistrasiAPI)
@@ -209,6 +222,7 @@ func handlerRequests() {
 
 	http.HandleFunc("/AmbilSemuaAkunAPI", AmbilSemuaAkunAPI)
 	http.HandleFunc("/EditUserAdminAPI", EditUserAdminAPI)
+	http.HandleFunc("/HapusUserAPI", HapusUserAPI)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
